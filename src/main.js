@@ -10,7 +10,7 @@ const opts = {
   host: "127.0.0.1",
   port: 8080,
   open: false,
-  root: import.meta.dirname,
+  root: process.cwd()
 };
 const url = `${opts.protocol}://${opts.host}:${opts.port}`;
 const server = http.createServer();
@@ -26,7 +26,7 @@ const contentTypeDict = {
 };
 
 function injectWS(file) {
-  const injectedScript = fs.readFileSync(path.join(opts.root, "injected.html"));
+  const injectedScript = fs.readFileSync(path.join(import.meta.dirname, "injected.html"));
   return file.replace("</body>", injectedScript + "</body>");
 }
 
