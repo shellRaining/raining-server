@@ -13,7 +13,6 @@ const opts = {
   root: process.cwd()
 };
 const url = `${opts.protocol}://${opts.host}:${opts.port}`;
-const server = http.createServer();
 const contentTypeDict = {
   ".html": "text/html",
   ".js": "text/javascript",
@@ -25,16 +24,10 @@ const contentTypeDict = {
   ".ico": "image/x-icon",
 };
 
-function injectWS(file) {
-  const injectedScript = fs.readFileSync(path.join(import.meta.dirname, "injected.html"));
-  return file.replace("</body>", injectedScript + "</body>");
-}
-
 // WebSocket server
 const wss = new WebSocketServer({ noServer: true });
 wss.on("connection", (ws) => {
   ws.on("error", console.error);
-  ws.send("connected");
 
   // set file watcher
   const ignored = [
@@ -61,6 +54,12 @@ wss.on("connection", (ws) => {
 });
 
 // http server
+function inject(file) {
+  const injectedScript = fs.readFileSync(path.join(import.meta.dirname, "injected.html"));
+  return file.replace("</body>", injectedScript + "</body>");
+}
+
+const server = http.createServer();
 server
   .on("listening", () => {
     if (opts.open) open(url);
@@ -74,7 +73,7 @@ server
 
     try {
       file = fs.readFileSync(filePath, { encoding: "utf8" });
-      file = injectWS(file);
+      file = inject(file);
       res.writeHead(200, { "Content-Type": contentType }).end(file, "utf-8");
     } catch (e) {
       res.writeHead(404).end();
@@ -85,5 +84,4 @@ server
       wss.emit("connection", ws, req);
     });
   });
-
 server.listen(opts.port, opts.host);
