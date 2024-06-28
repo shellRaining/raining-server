@@ -1,0 +1,13 @@
+<script>
+  const protocol = location.protocol === "http:" ? "ws://" : "wss://";
+  const address = protocol + location.host + location.pathname + "/ws";
+  const socket = new WebSocket(address);
+  socket.onmessage = function (msg) {
+    if (msg.data == "reload") {
+      setTimeout(() => {
+        location.reload();
+      }, 500);
+    } else if (msg.data == "refreshcss") console.log("refreshcss");
+  };
+  console.log("Live reload enabled.");
+</script>

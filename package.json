@@ -5,13 +5,15 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon main.js"
+    "dev": "nodemon src/main.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@types/node": "^20.14.9",
-    "open": "^10.1.0"
+    "chokidar": "^3.6.0",
+    "open": "^10.1.0",
+    "ws": "^8.17.1"
   }
 }
