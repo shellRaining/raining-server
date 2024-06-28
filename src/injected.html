@@ -5,7 +5,29 @@
   socket.onmessage = function (msg) {
     if (msg.data == "reload") {
       location.reload();
-    } else if (msg.data == "refreshcss") console.log("refreshcss");
+    } else if (msg.data == "refreshcss") {
+      const sheets = document.querySelectorAll("link");
+      const headEl = document.querySelector("head");
+      for (const sheet of sheets) {
+        sheet.remove()
+        const rel = sheet.rel;
+        if (
+          sheet.href &&
+          (typeof rel !== "string" ||
+            rel.length === 0 ||
+            rel.toLowerCase() === "stylesheet")
+        ) {
+          const url = sheet.href.replace(/(&|\?)_cacheOverride=\d+/, "");
+          console.log(url);
+          sheet.href =
+            url +
+            (url.indexOf("?") >= 0 ? "&" : "?") +
+            "_cacheOverride=" +
+            new Date().valueOf();
+          headEl.append(sheet);
+        }
+      }
+    }
   };
   console.log("Live reload enabled.");
 </script>

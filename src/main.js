@@ -66,9 +66,10 @@ server
   })
   .on("request", (req, res) => {
     const reqFilePath = req.url === "/" ? "./index.html" : `.${req.url}`;
-    const extname = path.extname(reqFilePath).toLowerCase();
+    const reqURL = new URL(reqFilePath, url)
+    const extname = path.extname(reqURL.pathname).toLowerCase();
     const contentType = contentTypeDict[extname];
-    const filePath = path.join(opts.root, reqFilePath);
+    const filePath = path.join(opts.root, reqURL.pathname);
     let file;
 
     try {
